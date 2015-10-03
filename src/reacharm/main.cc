@@ -9,6 +9,9 @@
 
 #include <memory>
 #include <ros/ros.h>
+#include "reacharm/lib/timer.h"
+#include "reacharm/server/reacharm_server.h"
+#include "reacharm/server/arm_provider.h"
 
 //------------------------------------------------------------------------------
 //
@@ -17,6 +20,15 @@ int main(int argc, char **argv) {
 
   std::shared_ptr<ros::NodeHandle> n = std::make_shared<ros::NodeHandle>();
   ros::Rate loop_rate(15);
+
+  auto server = ReachArmServer();
+  auto provider = ArmProvider();
+
+  for(int i = 0; i < 360; ++i) {
+    provider.SendYawAngle(static_cast<float>(i));
+    provider.SendPitchAngle(static_cast<float>(i));
+    MilliTimer::Sleep(10);
+  }
 
   while (ros::ok()) {
     ros::spinOnce();

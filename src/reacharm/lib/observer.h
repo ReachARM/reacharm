@@ -72,7 +72,7 @@ class Observer {
    * If not, then simply override this and do nothing.
    */
   virtual void OnSubjectNotify(Subject<Args_...> &subject,
-                               Args_... args) noexcept = 0;
+                               Args_... args) = 0;
 
  private:
   //============================================================================
