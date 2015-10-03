@@ -7,21 +7,24 @@
  * \date	03/10/2015
  */
 
-#ifndef REACHARM_MYO_API_H_
-#define REACHARM_MYO_API_H_
+#ifndef REACHARM_MYO_PROVIDER_H_
+#define REACHARM_MYO_PROVIDER_H_
 
 #include <array>
-#include <boost/circular_buffer.hpp>
+#include <thread>
+#include <bits/shared_ptr.h>
+
+#include "reacharm/lib/ring_buffer.h"
 #include "reacharm/lib/subject.h"
 
-class MyoAPI : public Subject<> {
+class MyoProvider: public Subject<> {
  public:
   //==========================================================================
   // T Y P E D E F   A N D   E N U M
 
-  using Ptr = std::shared_ptr<MyoAPI>;
+  using Ptr = std::shared_ptr<MyoProvider>;
 
-  using Buffer = boost::circular_buffer<double>;
+  using Buffer = ring_buffer<double>;
 
   enum class Movement {
     UNKNOWN = 0,
@@ -35,9 +38,9 @@ class MyoAPI : public Subject<> {
   //==========================================================================
   // P U B L I C   C / D T O R S
 
-  MyoAPI() noexcept;
+  MyoProvider() noexcept;
 
-  ~MyoAPI() noexcept;
+  ~MyoProvider() noexcept;
 
   //==========================================================================
   // P U B L I C   M E T H O D S
@@ -59,16 +62,25 @@ class MyoAPI : public Subject<> {
   bool IsOpeningHand() const noexcept;
 
  private:
+
+
+  double medianFilter(const Buffer& buffer) const noexcept;
+  void Snapshot() noexcept;
+
   //==========================================================================
   // P R I V A T E   M E M B E R S
 
-  Buffer buffer_x_;
+  Buffer r_;
 
-  Buffer buffer_y_;
+  Buffer p_;
+
+  Buffer y_;
+
+  std::thread snapshoting_thread_;
 
   Movement last_move_;
 
-  static constexpr uint64_t kBufferSize = 10;
+  static const int kBufferSize = 9;
 };
 
-#endif  // REACHARM_MYO_API_H_
+#endif  // REACHARM_MYO_PROVIDER_H_

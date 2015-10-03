@@ -7,62 +7,82 @@
  * \date	03/10/2015
  */
 
-#include "reacharm/server/myo_api.h"
+#include "myo_provider.h"
 
 //==============================================================================
 // C / D T O R S   S E C T I O N
 
 //------------------------------------------------------------------------------
 //
-MyoAPI::MyoAPI() noexcept : buffer_x_(kBufferSize),
-                            buffer_y_(kBufferSize),
-                            last_move_(Movement::UNKNOWN) {}
+MyoProvider::MyoProvider() noexcept : r_(Buffer(kBufferSize)),
+                            p_(Buffer(kBufferSize)),
+                            y_(Buffer(kBufferSize)),
+                            snapshoting_thread_(std::thread()),
+                            last_move_(Movement::UNKNOWN)   {}
 
 //------------------------------------------------------------------------------
 //
-MyoAPI::~MyoAPI() noexcept {}
+MyoProvider::~MyoProvider() noexcept {}
 
 //==============================================================================
 // M E T H O D   S E C T I O N
 
 //------------------------------------------------------------------------------
 //
-double MyoAPI::GetRollAngle() const noexcept {}
+double MyoProvider::GetRollAngle() const noexcept {
+  return medianFilter(r_);
+}
 
 //------------------------------------------------------------------------------
 //
-double MyoAPI::GetPitchAngle() const noexcept {}
+double MyoProvider::GetPitchAngle() const noexcept {
+  return medianFilter(p_);
+}
 
 //------------------------------------------------------------------------------
 //
-double MyoAPI::GetYawAngle() const noexcept {}
+double MyoProvider::GetYawAngle() const noexcept {
+  return medianFilter(y_);
+}
 
 //------------------------------------------------------------------------------
 //
-bool MyoAPI::IsSwapingRight() const noexcept {
+bool MyoProvider::IsSwapingRight() const noexcept {
   return last_move_ == Movement::SWAP_RIGHT;
 }
 
 //------------------------------------------------------------------------------
 //
-bool MyoAPI::IsSwapingLeft() const noexcept {
+bool MyoProvider::IsSwapingLeft() const noexcept {
   return last_move_ == Movement::SWAP_LEFT;
 }
 
 //------------------------------------------------------------------------------
 //
-bool MyoAPI::IsCloseGrip() const noexcept {
+bool MyoProvider::IsCloseGrip() const noexcept {
   return last_move_ == Movement::CLOSE_GRIP;
 }
 
 //------------------------------------------------------------------------------
 //
-bool MyoAPI::IsTapingFinger() const noexcept {
+bool MyoProvider::IsTapingFinger() const noexcept {
   return last_move_ == Movement::TAP_FINGERS;
 }
 
 //------------------------------------------------------------------------------
 //
-bool MyoAPI::IsOpeningHand() const noexcept {
+bool MyoProvider::IsOpeningHand() const noexcept {
   return last_move_ == Movement::OPEN_HAND;
+}
+
+//------------------------------------------------------------------------------
+//
+void MyoProvider::Snapshot() noexcept {
+  
+}
+
+//------------------------------------------------------------------------------
+//
+double MyoProvider::medianFilter(const Buffer &buffer) const noexcept {
+  return buffer.sort()[buffer.size()/2];
 }
