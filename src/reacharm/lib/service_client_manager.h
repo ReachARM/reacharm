@@ -18,12 +18,19 @@ class ServiceClientManager {
  public:
   static constexpr uint8_t kConnectionAttempts = 3;
 
-  //============================================================================
-  // C O N S T R U C T O R S   A N D   D E S T R U C T O R
+  //==========================================================================
+  // T Y P E D E F   A N D   E N U M
 
-  explicit ServiceClientManager() noexcept;
+  using Ptr = std::shared_ptr<ServiceClientManager>;
 
-  virtual ~ServiceClientManager();
+  using ServiceClient = std::shared_ptr<ros::ServiceClient>;
+
+  //==========================================================================
+  // P U B L I C   C / D T O R S
+
+  ServiceClientManager() noexcept;
+
+  virtual ~ServiceClientManager() noexcept;
 
   //============================================================================
   // P U B L I C   M E T H O D S
@@ -33,10 +40,10 @@ class ServiceClientManager {
 
   bool ShutdownService(const std::string &service_name);
 
-  ros::ServiceClient *const GetService(const std::string &service_name);
+  ServiceClient GetService(const std::string &service_name);
 
   template <typename T>
-  bool SecureCall(const T &service, const std::string &node);
+  bool SecureCall(T &service, const std::string &node);
 
  private:
   //============================================================================
@@ -44,7 +51,7 @@ class ServiceClientManager {
 
   ros::NodeHandle node_handler_;
 
-  std::map<std::string, ros::ServiceClient> services_;
+  std::map<std::string, ServiceClient> services_;
 };
 
 #include "reacharm/lib/service_client_manager_inl.h"

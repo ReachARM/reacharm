@@ -7,4 +7,24 @@
  * \date	03/10/2015
  */
 
-#include "reacharm_server.h"
+#include "reacharm/server/reacharm_server.h"
+
+//==============================================================================
+// C / D T O R S   S E C T I O N
+
+//------------------------------------------------------------------------------
+//
+ReachArmServer::ReachArmServer() noexcept {}
+
+//------------------------------------------------------------------------------
+//
+ReachArmServer::~ReachArmServer() noexcept {}
+
+//==============================================================================
+// M E T H O D   S E C T I O N
+
+//------------------------------------------------------------------------------
+//
+void ReachArmServer::OnSubjectNotify(Subject<> &subject) {
+  // Handle the response from myo
+}
