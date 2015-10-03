@@ -10,6 +10,7 @@
 #ifndef REACHARM_REACHARM_SERVER_H_
 #define REACHARM_REACHARM_SERVER_H_
 
+#include <memory>
 #include "reacharm/lib/observer.h"
 
 class ReachArmServer : public Observer<> {

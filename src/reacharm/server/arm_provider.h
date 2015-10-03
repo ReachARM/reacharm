@@ -13,12 +13,12 @@
 #include <memory>
 #include "reacharm/lib/service_client_manager.h"
 
-class ArmAPI : public ServiceClientManager {
+class ArmProvider: public ServiceClientManager {
  public:
   //==========================================================================
   // T Y P E D E F   A N D   E N U M
 
-  using Ptr = std::shared_ptr<ArmAPI>;
+  using Ptr = std::shared_ptr<ArmProvider>;
 
   enum class MotorID {
     BASE = 0,
@@ -30,9 +30,9 @@ class ArmAPI : public ServiceClientManager {
   //==========================================================================
   // P U B L I C   C / D T O R S
 
-  ArmAPI() noexcept;
+  ArmProvider() noexcept;
 
-  ~ArmAPI() noexcept;
+  ~ArmProvider() noexcept;
 
   //==========================================================================
   // P U B L I C   M E T H O D S
