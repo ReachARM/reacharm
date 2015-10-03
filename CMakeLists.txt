@@ -22,13 +22,14 @@ find_package( catkin REQUIRED COMPONENTS
     roscpp
     message_generation
     message_runtime
+    ArmController
     )
 
 # Declare this project as a catkin package and export the necessary build flags
 catkin_package(
     INCLUDE_DIRS src
     LIBRARIES
-    CATKIN_DEPENDS roscpp std_msgs
+    CATKIN_DEPENDS roscpp std_msgs ArmController
 )
 
 #===============================================================================
@@ -38,10 +39,7 @@ set( reacharm_SRC_DIR "src" )
 
 # Get all the files of the projects.
 file( GLOB_RECURSE reacharm_HDR_FILES "${reacharm_SRC_DIR}/*.h" )
-file( GLOB_RECURSE reacharm_SRC_FILES
-    "${reacharm_SRC_DIR}/*.cc"
-    "${reacharm_SRC_DIR}/*.h"
-    )
+file( GLOB_RECURSE reacharm_SRC_FILES "${reacharm_SRC_DIR}/*.cc" )
 
 # Include all the directories where source can be found.
 include_directories(
@@ -64,3 +62,14 @@ add_executable( ${TARGET_NAME}
 target_link_libraries( ${TARGET_NAME}
     ${catkin_LIBRARIES}
     )
+
+set_target_properties( ${TARGET_NAME}
+    PROPERTIES
+    LINKER_LANGUAGE CXX
+    )
+
+#==========================================================================
+# C R E A T I N G   U N I T   T E S T S
+
+catkin_add_gtest( arm_provider_test test/arm_provider_test.cc )
+target_link_libraries( arm_provider_test ${catkin_LIBRARIES} )

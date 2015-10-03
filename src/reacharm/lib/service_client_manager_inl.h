@@ -25,7 +25,7 @@ inline ServiceClientManager::ServiceClientManager() noexcept : node_handler_(ros
 //
 inline ServiceClientManager::~ServiceClientManager() {
   for (auto &service : services_) {
-    service.second.shutdown();
+    service.second->shutdown();
   }
 }
 
@@ -37,8 +37,8 @@ inline ServiceClientManager::~ServiceClientManager() {
 template <typename M>
 inline void ServiceClientManager::RegisterService(const std::string &service_name) {
   auto result_advertise = node_handler_.serviceClient<M>(service_name);
-  auto pair = std::pair<std::string, ros::ServiceClient>(service_name,
-                                                         result_advertise);
+  auto pair = std::pair<std::string, ServiceClient>(service_name,
+                                                    ServiceClient(&result_advertise));
   services_.insert(pair);
 }
 
@@ -47,7 +47,7 @@ inline void ServiceClientManager::RegisterService(const std::string &service_nam
 inline bool ServiceClientManager::ShutdownService(const std::string &service_name) {
   for (auto &service : services_) {
     if (service.first == service_name) {
-      service.second.shutdown();
+      service.second->shutdown();
       services_.erase(service.first);
       return true;
     }
@@ -57,11 +57,11 @@ inline bool ServiceClientManager::ShutdownService(const std::string &service_nam
 
 //------------------------------------------------------------------------------
 //
-inline ros::ServiceClient *const ServiceClientManager::GetService(
+inline ServiceClientManager::ServiceClient ServiceClientManager::GetService(
     const std::string &service_name) {
   for (auto &service : services_) {
     if (service.first == service_name) {
-      return &(service.second);
+      return service.second;
     }
   }
   return nullptr;
@@ -70,10 +70,10 @@ inline ros::ServiceClient *const ServiceClientManager::GetService(
 //------------------------------------------------------------------------------
 //
 template <typename T>
-inline bool ServiceClientManager::SecureCall(const T &service,
+inline bool ServiceClientManager::SecureCall(T &service,
                                       const std::string &node) {
   for (int i = 0; i < kConnectionAttempts; ++i) {
-    if (services_.at(node).call(service)) {
+    if (services_.at(node)->call(service)) {
       return true;
     }
   }

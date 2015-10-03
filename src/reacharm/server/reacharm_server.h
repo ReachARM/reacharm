@@ -29,6 +29,9 @@ class ReachArmServer : public Observer<> {
 
   //==========================================================================
   // P U B L I C   M E T H O D S
+
+  virtual void OnSubjectNotify(Subject<> &subject) override;
+
 };
 
 #endif  // REACHARM_REACHARM_SERVER_H_
