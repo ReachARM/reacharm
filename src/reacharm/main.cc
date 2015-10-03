@@ -1,5 +1,10 @@
 /**
- * \file main.cpp
+ * \file	main.cc
+ * \author	Thibaut Mattio <thibaut.mattio@gmail.com>
+ * \author  Jérémie St-Jules Prévôt <jeremie.st.jules.prevost@gmail.com>
+ * \author  Karl Ritchie <ritchie.karl@gmail.com>
+ * \author  Mathieu Benoit <mathben963@gmail.com>
+ * \date	03/10/2015
  */
 
 #include <memory>
@@ -10,8 +15,7 @@
 int main(int argc, char **argv) {
   ros::init(argc, argv, "reacharm");
 
-  std::shared_ptr<ros::NodeHandle> n =
-      std::make_shared<ros::NodeHandle>();
+  std::shared_ptr<ros::NodeHandle> n = std::make_shared<ros::NodeHandle>();
   ros::Rate loop_rate(15);
 
   while (ros::ok()) {
